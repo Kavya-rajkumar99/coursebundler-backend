@@ -75,28 +75,28 @@ export const cancelSubscription = catchAsyncError(async (req, res, next) => {
 
   //Check if refund is applicable
   let refund = false;
-//   const payment = await Payment.findOne({
-//     razorpay_subscription_id: subscription_id,
-//   });
+  const payment = await Payment.findOne({
+    razorpay_subscription_id: subscription_id,
+  });
 
-//   if (!payment) {
-//     return next(
-//       new ErrorHandler("No payment found with this subscription id", 404)
-//     );
-//   }
+  if (!payment) {
+    return next(
+      new ErrorHandler("No payment found with this subscription id", 404)
+    );
+  }
 
-//   const timeGap = Date.now() - payment.createdAt;
-//   const refundTimeGap = process.env.REFUND_DAYS * 24 * 60 * 60 * 1000;
-//   if (timeGap <= refundTimeGap) {
-//     refund = true;
-//     await instance.payments.refund(payment.razorpay_payment_id);
-//   }
+  const timeGap = Date.now() - payment.createdAt;
+  const refundTimeGap = process.env.REFUND_DAYS * 24 * 60 * 60 * 1000;
+  if (timeGap <= refundTimeGap) {
+    refund = true;
+    await instance.payments.refund(payment.razorpay_payment_id);
+  }
 
   user.subscription.id = undefined;
   user.subscription.status = undefined;
 
   await user.save()
-//   await payment.remove();
+  await payment.remove();
 
   res.status(200).json({
     success: true,
