@@ -10,6 +10,9 @@ export const getAllCourses = catchAsyncError(async (req, res, next) => {
   console.log(req.query)
   const keyword = req.query.keyword || "";
   const category = req.query.category || ""
+  if (category === "All Courses"){
+    category=""
+  }
   const courses = await Course.find({
     title : {
       $regex : keyword,
